@@ -6,15 +6,32 @@ import productsApi from "./product.api";
 import {createSelector} from 'reselect';
 import ListProductComponent from "./list.product.component";
 import AddProductComponent from "./add.product.component";
+import {PRODUCT_CALLBACK_ENUMS} from "./callbacks";
 
 function withSubscription(DumpComponent) {
     return class Container extends React.Component {
+
         constructor(props) {
             super(props);
-            this.fetchProducts = this.fetchProducts.bind(this);
+            this.fetchAll = this.fetchAll.bind(this);
         }
 
-        fetchProducts = (page) => {
+        callbackHandler = (type, data) => {
+            switch (type) {
+                case PRODUCT_CALLBACK_ENUMS.FETCH_PRODUCTS:
+                    this.fetchAll(data);
+                    break;
+
+                case PRODUCT_CALLBACK_ENUMS.SELECT_PRODUCT:
+                    // this.onProductSelect(data);
+                    break;
+
+                default:
+                    return false;
+            }
+        };
+
+        fetchAll = (page) => {
             this.props.dispatch(fetchProductsBegin());
             productsApi.getAll(page)
                 .then(response => {
@@ -27,7 +44,7 @@ function withSubscription(DumpComponent) {
         };
 
         render() {
-            return <DumpComponent {...this.props} fetchProducts={this.fetchProducts}/>;
+            return <DumpComponent {...this.props}  callbackHandler={this.callbackHandler}/>;
         }
     }
 }

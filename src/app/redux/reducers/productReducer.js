@@ -7,7 +7,8 @@ import {
 const initialState = {
     items: [],
     loading: false,
-    error: null
+    error: null,
+    loaded: false
 };
 
 export default function productReducer(state = initialState, action) {
@@ -16,14 +17,16 @@ export default function productReducer(state = initialState, action) {
             return {
                 ...state,
                 loading: true,
-                error: null
+                error: null,
+                loaded: false
             };
 
         case FETCH_PRODUCTS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                items: action.payload.products
+                items: action.payload.products,
+                loaded: true
             };
 
         case FETCH_PRODUCTS_FAILURE:
@@ -31,7 +34,8 @@ export default function productReducer(state = initialState, action) {
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                items: []
+                items: [],
+                loaded: false
             };
 
         default:
